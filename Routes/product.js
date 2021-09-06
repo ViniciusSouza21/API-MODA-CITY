@@ -6,19 +6,19 @@ const AuthMiddleware = require("../Middleware/AuthMiddleware");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
-  destination: function (req, file, calback) {
-    calback(null, "./Uploads/");
+  destination: function (req, file, cb) {
+    cb(null, "./Uploads/");
   },
-  filename: function (req, file, calback) {
-    calback(null, file.originalname);
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
   },
 });
 
-const fileFilter = (req, file, calback) => {
-  if (file.mimeType === "image/jpeg" || file.mimeType === "image/png") {
-    calback(null, true);
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
   } else {
-    calback(null, false);
+    cb(null, false);
   }
 };
 
@@ -27,7 +27,7 @@ const upload = multer({
   limits: {
     fileSize: 1024 * 1024 * 10,
   },
-  // fileFilter: fileFilter
+  fileFilter: fileFilter
 });
 
 router.get("/", AuthMiddleware.auth, (req, res, next) => {
