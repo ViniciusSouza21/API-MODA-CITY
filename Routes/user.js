@@ -62,7 +62,6 @@ router.get("/", AuthMiddleware.auth, (req, res, next) => {
 
     conn.query(
       "SELECT * FROM user;",
-      [req.body.id],
 
       (error, result, fields) => {
         if (error) {
@@ -103,7 +102,7 @@ router.post("/", upload.single("photo"), (req, res, next) => {
             }
 
             conn.query(
-              "INSERT INTO user (admin, seller, firstName, lastName, email, password, state, neighborhood, city, cep, photo) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+              "INSERT INTO user (admin, seller, firstName, lastName, email, password, state, city, photo) VALUES (?,?,?,?,?,?,?,?,?)",
               [
                 req.body.admin,
                 req.body.seller,
@@ -112,9 +111,7 @@ router.post("/", upload.single("photo"), (req, res, next) => {
                 req.body.email,
                 hash,
                 req.body.state,
-                req.body.neighborhood,
                 req.body.city,
-                req.body.cep,
                 req.file.path,
               ],
 
@@ -141,7 +138,6 @@ router.post("/", upload.single("photo"), (req, res, next) => {
 });
 
 router.put("/:id", AuthMiddleware.auth, (req, res, next) => {
-
   const id = req.params.id;
 
   mysql.getConnection((error, conn) => {
@@ -150,7 +146,7 @@ router.put("/:id", AuthMiddleware.auth, (req, res, next) => {
     }
 
     conn.query(
-      "UPDATE user SET admin = ?, seller = ?, firstName = ?, lastName = ?, email = ?, state = ?, neighborhood = ?, city = ?, cep = ? WHERE id = ?",
+      "UPDATE user SET admin = ?, seller = ?, firstName = ?, lastName = ?, email = ?, state = ?, city = ? WHERE id = ?",
       [
         req.body.admin,
         req.body.seller,
@@ -158,9 +154,7 @@ router.put("/:id", AuthMiddleware.auth, (req, res, next) => {
         req.body.lastName,
         req.body.email,
         req.body.state,
-        req.body.neighborhood,
         req.body.city,
-        req.body.cep,
         id,
       ],
 
@@ -182,7 +176,6 @@ router.put("/:id", AuthMiddleware.auth, (req, res, next) => {
 });
 
 router.patch("/personal/:id", AuthMiddleware.auth, (req, res, next) => {
-
   const id = req.params.id;
 
   mysql.getConnection((error, conn) => {
@@ -192,7 +185,13 @@ router.patch("/personal/:id", AuthMiddleware.auth, (req, res, next) => {
 
     conn.query(
       "UPDATE user SET seller = ?, firstName = ?, lastName = ?, email = ? WHERE id = ?",
-      [req.body.seller, req.body.firstName, req.body.lastName, req.body.email, id],
+      [
+        req.body.seller,
+        req.body.firstName,
+        req.body.lastName,
+        req.body.email,
+        id,
+      ],
 
       (error, result, field) => {
         conn.release();
@@ -216,7 +215,6 @@ router.patch(
   upload.single("photo"),
   AuthMiddleware.auth,
   (req, res, next) => {
-
     const id = req.params.id;
 
     mysql.getConnection((error, conn) => {
@@ -247,7 +245,6 @@ router.patch(
 );
 
 router.patch("/address/:id", AuthMiddleware.auth, (req, res, next) => {
-
   const id = req.params.id;
 
   mysql.getConnection((error, conn) => {
@@ -256,14 +253,8 @@ router.patch("/address/:id", AuthMiddleware.auth, (req, res, next) => {
     }
 
     conn.query(
-      "UPDATE user SET state = ?, neighborhood = ?, city = ?, cep = ? WHERE id = ?",
-      [
-        req.body.state,
-        req.body.neighborhood,
-        req.body.city,
-        req.body.cep,
-        id,
-      ],
+      "UPDATE user SET state = ?, city = ? WHERE id = ?",
+      [req.body.state, req.body.city, id],
 
       (error, result, field) => {
         conn.release();
@@ -283,7 +274,6 @@ router.patch("/address/:id", AuthMiddleware.auth, (req, res, next) => {
 });
 
 router.patch("/password/:id", AuthMiddleware.auth, (req, res, next) => {
-
   const id = req.params.id;
 
   mysql.getConnection((error, conn) => {
@@ -337,7 +327,6 @@ router.patch("/password/:id", AuthMiddleware.auth, (req, res, next) => {
 });
 
 router.patch("/admin/password/:id", AuthMiddleware.auth, (req, res, next) => {
-
   const id = req.params.id;
 
   mysql.getConnection((error, conn) => {

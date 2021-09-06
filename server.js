@@ -6,5 +6,5 @@ const port = process.env.PORT || 8080;
 const server = http.createServer(app);
 
 server.listen(port, () => {
-    console.log(`API listening on the port: ${port}`);
+    console.log(`App listening on the port: ${port}`);
 });

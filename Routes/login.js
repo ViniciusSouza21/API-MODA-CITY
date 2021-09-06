@@ -4,6 +4,7 @@ const router = express.Router();
 const mysql = require("../Config/connection").pool;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const config = require("../Config/auth");
 
 router.post("/", (req, res, next) => {
   mysql.getConnection((error, conn) => {
@@ -41,7 +42,7 @@ router.post("/", (req, res, next) => {
               id_user: results[0].id,
               email: results[0].email,
             },
-            process.env.JWT_KEY,
+            config.secret,
             {
               expiresIn: "24h",
             }

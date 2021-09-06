@@ -38,7 +38,54 @@ router.get("/", AuthMiddleware.auth, (req, res, next) => {
     }
 
     conn.query(
-      "SELECT * FROM product WHERE supplier = ?;",
+      "SELECT * FROM product;",
+
+      (error, result, fields) => {
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+
+        return res.status(200).send({ response: result });
+      }
+    );
+  });
+});
+
+router.get("/:id", AuthMiddleware.auth, (req, res, next) => {
+
+  const id = req.params.id;
+
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+
+    conn.query(
+      "SELECT * FROM product WHERE id = ?;",
+      id,
+
+      (error, result, fields) => {
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+
+        return res.status(200).send({ response: result });
+      }
+    );
+  });
+});
+
+router.get("/user/:id", AuthMiddleware.auth, (req, res, next) => {
+
+  const id = req.params.id;
+
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+
+    conn.query(
+      "SELECT * FROM product WHERE user = ?;",
       id,
 
       (error, result, fields) => {
@@ -57,7 +104,6 @@ router.post(
   upload.single("photo"),
   AuthMiddleware.auth,
   (req, res, next) => {
-    console.log(req.file);
 
     mysql.getConnection((error, conn) => {
       if (error) {
@@ -65,16 +111,15 @@ router.post(
       }
 
       conn.query(
-        "INSERT INTO product (supplier, description, value, available, unit, category, name, photo) VALUES (?,?,?,?,?,?,?,?)",
+        "INSERT INTO product (name, description, price, color, size, photo, user) VALUES (?,?,?,?,?,?,?)",
         [
-          req.body.supplier,
-          req.body.description,
-          req.body.value,
-          req.body.available,
-          req.body.unit,
-          req.body.category,
           req.body.name,
+          req.body.description,
+          req.body.price,
+          req.body.color,
+          req.body.size,
           req.file.path,
+          req.body.user,   
         ],
 
         (error, result, field) => {
@@ -87,8 +132,7 @@ router.post(
             });
           }
           res.status(201).send({
-            image_product: req.file.path,
-            message: "Produto inserido com sucesso!",
+            message: "Product successfully inserted!",
             id_product: result.insertId,
           });
         }
@@ -98,25 +142,26 @@ router.post(
 );
 
 router.patch(
-  "/",
+  "/:id",
   AuthMiddleware.auth,
   (req, res, next) => {
+
+    const id = req.params.id;
+
     mysql.getConnection((error, conn) => {
       if (error) {
         return res.status(500).send({ error: error });
       }
 
       conn.query(
-        "UPDATE product SET description = ?, value = ?, available = ?, unit = ?, category = ?, name = ?, supplier = ? WHERE id = ?",
+        "UPDATE product SET name = ?, description = ?, price = ?, color = ?, size = ? WHERE id = ?",
         [
-          req.body.description,
-          req.body.value,
-          req.body.available,
-          req.body.unit,
-          req.body.category,
           req.body.name,
-          req.body.supplier,
-          req.body.id,
+          req.body.description,
+          req.body.price,
+          req.body.color,
+          req.body.size,
+          id,
         ],
 
         (error, result, field) => {
@@ -129,7 +174,7 @@ router.patch(
             });
           }
           res.status(202).send({
-            message: "Alteração concluída com sucesso!",
+            message: "Change completed sucessfully!",
           });
         }
       );
@@ -138,10 +183,13 @@ router.patch(
 );
 
 router.patch(
-  "/photo",
+  "/photo/:id",
   upload.single("photo"),
   AuthMiddleware.auth,
   (req, res, next) => {
+
+    const id = req.params.id;
+
     mysql.getConnection((error, conn) => {
       if (error) {
         return res.status(500).send({ error: error });
@@ -151,7 +199,7 @@ router.patch(
         "UPDATE product SET photo = ? WHERE id = ?",
         [
           req.file.path,
-          req.body.id,
+          id,
         ],
 
         (error, result, field) => {
@@ -164,7 +212,7 @@ router.patch(
             });
           }
           res.status(202).send({
-            message: "Alteração concluída com sucesso!",
+            message: "Change completed sucessfully!",
           });
         }
       );
@@ -194,7 +242,7 @@ router.delete("/:id", AuthMiddleware.auth, (req, res, next) => {
           });
         }
         res.status(202).send({
-          message: "Produto removido com sucesso!",
+          message: "Product deleted successfully!",
         });
       }
     );

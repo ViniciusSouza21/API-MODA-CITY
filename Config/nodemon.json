@@ -1,11 +1,9 @@
 {
     "env" : {
         "MYSQL_USER" : "root",
-        "MYSQL_PASSWORD" : "root",
+        "MYSQL_PASSWORD" : "",
         "MYSQL_DATABASE" : "PRODUCT_STORE",
         "MYSQL_HOST" : "localhost",
-        "MYSQL_PORT" : 3300,
-
-        "JWT_KEY": "c82ba6616350bc3a94cc557793fdebd18cd9352793ab082ea6acadfe26b1e66b"
+        "MYSQL_PORT" : 3306
     }
 }

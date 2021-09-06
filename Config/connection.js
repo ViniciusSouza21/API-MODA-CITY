@@ -3,10 +3,10 @@ const mysql = require('mysql');
 var pool = mysql.createPool({
 
     "user" : "root",
-    "password": "root",
+    "password": "",
     "database" : "PRODUCT_STORE",
     "host" : "localhost",
-    "port" : 3300
+    "port" : 3306
 
 });
 
