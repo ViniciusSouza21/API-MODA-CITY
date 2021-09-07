@@ -4,20 +4,20 @@ const morgan = require("morgan");
 
 app.use('/uploads', express.static('uploads'));
 
-const cors = require("cors");
+// const cors = require("cors");
 
 const routeUsers = require("./Routes/user");
 const routeProducts = require("./Routes/product");
 
 const rotaLogin = require("./Routes/login");
 
-const corsOptions = {
-  origin: "https://localhost:3000",
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+// const corsOptions = {
+//   origin: "https://localhost:19000",
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -47,7 +47,7 @@ app.use("/products", routeProducts);
 app.use("/login", rotaLogin);
 
 app.use((req, res, next) => {
-  const erro = new Error("Não encontrado");
+  const erro = new Error("Not found!");
   erro.status(404);
   next(erro);
 });
